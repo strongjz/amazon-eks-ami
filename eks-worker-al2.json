@@ -24,13 +24,13 @@
     "source_ami_filter_name": "amzn2-ami-minimal-hvm-*",
     "arch": null,
     "instance_type": null,
-    "ami_description": "EKS Kubernetes Worker AMI with AmazonLinux2 image",
+    "ami_description": "EKS Kubernetes Worker AMI with AmazonLinux2 image w/Falco",
 
     "ssh_interface": "",
     "ssh_username": "ec2-user",
     "temporary_security_group_source_cidrs": "",
     "security_group_id": "",
-    "associate_public_ip_address": "",
+    "associate_public_ip_address": "true",
     "subnet_id": "",
     "remote_folder": "",
     "launch_block_device_mappings_volume_size": "4",
@@ -128,7 +128,6 @@
       "type": "shell",
       "remote_folder": "{{ user `remote_folder`}}",
       "script": "{{template_dir}}/scripts/install-worker.sh",
-      "pause_before": "90s",
       "environment_vars": [
         "KUBERNETES_VERSION={{user `kubernetes_version`}}",
         "KUBERNETES_BUILD_DATE={{user `kubernetes_build_date`}}",
@@ -142,6 +141,11 @@
         "AWS_SECRET_ACCESS_KEY={{user `aws_secret_access_key`}}",
         "AWS_SESSION_TOKEN={{user `aws_session_token`}}"
       ]
+    },
+    {
+      "type": "shell",
+      "remote_folder": "{{ user `remote_folder`}}",
+      "script": "{{template_dir}}/scripts/install-falco.sh"
     },
     {
       "type": "shell",

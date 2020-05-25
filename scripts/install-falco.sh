@@ -1,16 +1,31 @@
 #!/bin/bash
 
-curl -s https://falco.org/repo/falcosecurity-3672BA8F.asc | apt-key add -
-echo "deb https://dl.bintray.com/falcosecurity/deb stable main" | tee -a /etc/apt/sources.list.d/falcosecurity.list
-apt-get update -y
+TEMPLATE_DIR=${TEMPLATE_DIR:-/tmp/worker}
 
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubectl
-chmod +x ./kubectl
+echo "##########################################################"
+echo "#                 INSTALLING FALCO                       #"
+echo "##########################################################"
+# Falco install instructions https://falco.org/docs/installation/
 
-sudo mv ./kubectl /usr/local/bin/kubectl
+# Trust the falcosecurity GPG key and configure the yum repository:
+sudo rpm --import $TEMPLATE_DIR/falcosecurity-3672BA8F.asc
 
-sudo pip install pipenv
+sudo cp $TEMPLATE_DIR/falcosecurity-rpm.repo /etc/yum.repos.d/falcosecurity.repo
 
-apt-get -y install linux-headers-$(uname -r)
+#Ensuring DKMS is installed
+sudo yum install epel-release
 
-apt-get install -y falco
+# Update the OS to begin with to catch up to the latest packages.
+sudo yum update -y
+
+# Install kernel headers:
+sudo yum -y install kernel-devel-$(uname -r)
+
+# Installing falco
+sudo yum -y install falco
+
+sudo mv $TEMPLATE_DIR/falco.service /etc/systemd/system/falco.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable falco
+sudo systemctl start falco
