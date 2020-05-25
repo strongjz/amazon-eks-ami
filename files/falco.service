@@ -1,7 +1,7 @@
 [Unit]
 Description=Falco: Container Native Runtime Security
 
-Service]
+[Service]
 Type=simple
 User=root
 ExecStart=/usr/bin/falco --pidfile=/var/run/falco.pid

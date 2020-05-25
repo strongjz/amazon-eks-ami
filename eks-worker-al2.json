@@ -127,6 +127,11 @@
     {
       "type": "shell",
       "remote_folder": "{{ user `remote_folder`}}",
+      "script": "{{template_dir}}/scripts/install-falco.sh"
+    },
+    {
+      "type": "shell",
+      "remote_folder": "{{ user `remote_folder`}}",
       "script": "{{template_dir}}/scripts/install-worker.sh",
       "environment_vars": [
         "KUBERNETES_VERSION={{user `kubernetes_version`}}",
@@ -141,11 +146,6 @@
         "AWS_SECRET_ACCESS_KEY={{user `aws_secret_access_key`}}",
         "AWS_SESSION_TOKEN={{user `aws_session_token`}}"
       ]
-    },
-    {
-      "type": "shell",
-      "remote_folder": "{{ user `remote_folder`}}",
-      "script": "{{template_dir}}/scripts/install-falco.sh"
     },
     {
       "type": "shell",
